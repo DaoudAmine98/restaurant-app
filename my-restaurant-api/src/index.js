@@ -469,7 +469,7 @@ async function checkLogin(request) {
 
         
         const compte = comptes.find(
-            c => c.username === loginData.username || c.email === loginData.username
+            c => c.username === loginData.username || c.email === loginData.email
         );
 
        

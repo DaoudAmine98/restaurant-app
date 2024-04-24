@@ -48,31 +48,40 @@ export default {
   },
   methods: {
     async handleLogin() {
-      this.error = ''; 
-      
-      try {
-        const response = await fetch('https://my-restaurant-api.restoamine.workers.dev/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(this.loginInfo)
-        });
+  this.error = ''; 
+  let loginPayload = {
+    password: this.loginInfo.password
+  };
 
-        const result = await response.json();
-
-        if (!response.ok) {
-          this.error = result.message; 
-        } else {
-          this.$router.push('/home');
-        }
-      } catch (err) {
-        console.error('Error during login:', err);
-        this.error = 'An error occurred during login.'; 
-      }
-    }
+  // Determine if the input is an email or username
+  if (this.loginInfo.username.includes('@')) {
+    loginPayload.email = this.loginInfo.username;  // Send as email
+  } else {
+    loginPayload.username = this.loginInfo.username;  // Send as username
   }
-};
+
+  try {
+    const response = await fetch('https://my-restaurant-api.restoamine.workers.dev/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(loginPayload)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      this.error = result.message;  // Display error message from server
+    } else {
+      this.$router.push('/home');  // Navigate to home page on successful login
+    }
+  } catch (err) {
+    console.error('Error during login:', err);
+    this.error = 'An error occurred during login.';  // Display a generic error message
+  }
+}
+  }};
 </script>
 
 <style scoped>
